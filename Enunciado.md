@@ -11,7 +11,7 @@ Você recebeu um projeto backend de uma aplicação de e-commerce estruturada co
 - **Service**: Contém a lógica de negócio.
 - **Repository**: Responsável pela interação com o banco de dados.
 
-Neste trabalho, o foco será implementar **testes automatizados** para a funcionalidade de **finalizar compra**, que faz parte de um processo de checkout em um e-commerce. 
+Neste trabalho, o foco será implementar **testes automatizados** para a funcionalidade de **finalizar compra**, que faz parte de um processo de checkout em um e-commerce.
 
 Este trabalho deverá ser feito pelo mesmo grupo da 2a unidade.
 
