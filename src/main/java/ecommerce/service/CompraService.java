@@ -90,25 +90,25 @@ public class CompraService {
 		}
 
 		// Calcular frete com base no peso
-		Integer valorFrete = 0;
+		BigDecimal valorFrete = BigDecimal.valueOf(0);
 
 		if(pesoTotal < 5) {
-			valorFrete = 0;
+			valorFrete = BigDecimal.valueOf(0);
 		} else if (pesoTotal < 10) {
-			valorFrete = pesoTotal * 2;
+			valorFrete = BigDecimal.valueOf(pesoTotal * 2);
 		} else if (pesoTotal < 50) {
-			valorFrete = pesoTotal * 4;
+			valorFrete = BigDecimal.valueOf(pesoTotal * 4);
 		} else {
-			valorFrete = pesoTotal * 7;
+			valorFrete = BigDecimal.valueOf(pesoTotal * 7);
 		}
 
 		// Calcular frete para tipo de clientes
 		TipoCliente tipoCliente = carrinho.getCliente().getTipo();
 
 		if (tipoCliente == TipoCliente.OURO) {
-			valorFrete = 0;
+			valorFrete = BigDecimal.valueOf(0);
 		} else if (tipoCliente == TipoCliente.PRATA) {
-			valorFrete = (int) (valorFrete * 0.5);
+			valorFrete = valorFrete.multiply(BigDecimal.valueOf(0.5));
 		}
 
 		// Calcular desconto com base no valor total
@@ -119,6 +119,7 @@ public class CompraService {
 		}
 
 		// Retornar o valor total
+		valorTotal = valorTotal.add(valorFrete);
 		return valorTotal;
 	}
 }
