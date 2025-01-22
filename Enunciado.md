@@ -30,9 +30,9 @@ Seu objetivo é implementar testes que cubram a funcionalidade de **finalizar co
 #### Regras para cálculo do custo da compra
 O custo de uma compra é composto pelo custo dos produtos e o custo do frete.
 
-O valor do frete é calculado com base no peso total de todos itens comprados: até 5 kg não é cobrado frete; acima de 5 kg e abaixo de 10 kg é cobrado R$ 2,00 por kg; acima de 10 kg e abaixo de 50 kg é cobrado R$ 4,00 por kg; e acima de 50 kg é cobrado R$ 7,00 por kg. Além disso, clientes do tipo Ouro possuem isenção total do valor do frete, do tipo Prata possuem desconto de 50% e do tipo Bronze pagam o valor integral.
+O valor do frete é calculado com base no peso total de todos itens comprados: até 5 kg não é cobrado frete; acima de 5 kg e abaixo de 10 kg é cobrado R\$2,00 por kg; acima de 10 kg e abaixo de 50 kg é cobrado R\$4,00 por kg; e acima de 50 kg é cobrado R\$7,00 por kg. Além disso, clientes do tipo Ouro possuem isenção total do valor do frete, do tipo Prata possuem desconto de 50% e do tipo Bronze pagam o valor integral.
 
-Carrinhos de compras que custam mais de R$ 500,00 recebem um desconto de 10% e aqueles que custam mais de R$ 1000,00 recebem 20% de desconto. Vale ressaltar que este desconto é aplicado somente ao valor dos itens, excluindo o valor do frete.
+Carrinhos de compras que custam mais de R\$500,00 recebem um desconto de 10% e aqueles que custam mais de R\$1000,00 recebem 20% de desconto. Vale ressaltar que este desconto é aplicado somente ao valor dos itens, excluindo o valor do frete.
 
 #### Objetivos do Trabalho
    - Implementar a lógica de negócio do cálculo do custo (método `calcularCustoTotal` da classe `CompraService`).
