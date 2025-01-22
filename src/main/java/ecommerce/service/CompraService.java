@@ -74,26 +74,27 @@ public class CompraService {
 	}
 
 	public BigDecimal calcularCustoTotal(CarrinhoDeCompras carrinho) {
-		// Definir valor total
-		BigDecimal valorTotal = BigDecimal.ZERO;
-		Integer pesoTotal = 0;
 
-		// Percorrer itens do carrinho
+		// Retornar o custo final com cálculo de frete e promoção
+		return calcularFrete(carrinho).add(calcularValorProdutos(carrinho));
+	}
+
+	BigDecimal calcularFrete(CarrinhoDeCompras carrinho){
+
+		// Calcular peso do carrinho
+		Integer pesoTotal = 0;
 		for (ItemCompra item : carrinho.getItens()) {
-			// Calcular valores
-			BigDecimal valor = BigDecimal.valueOf(item.getQuantidade()).multiply(item.getProduto().getPreco());
 			Integer peso = (int) (item.getQuantidade() * item.getProduto().getPeso());
-			
+
 			// Adicionar valores ao total
-			valorTotal = valorTotal.add(valor);
 			pesoTotal += peso;
 		}
 
 		// Calcular frete com base no peso
-		BigDecimal valorFrete = BigDecimal.valueOf(0);
+		BigDecimal valorFrete = BigDecimal.ZERO;
 
 		if(pesoTotal < 5) {
-			valorFrete = BigDecimal.valueOf(0);
+			valorFrete = BigDecimal.ZERO;
 		} else if (pesoTotal < 10) {
 			valorFrete = BigDecimal.valueOf(pesoTotal * 2);
 		} else if (pesoTotal < 50) {
@@ -106,20 +107,33 @@ public class CompraService {
 		TipoCliente tipoCliente = carrinho.getCliente().getTipo();
 
 		if (tipoCliente == TipoCliente.OURO) {
-			valorFrete = BigDecimal.valueOf(0);
+			valorFrete = BigDecimal.ZERO;
 		} else if (tipoCliente == TipoCliente.PRATA) {
 			valorFrete = valorFrete.multiply(BigDecimal.valueOf(0.5));
 		}
 
-		// Calcular desconto com base no valor total
+		return valorFrete;
+	}
+
+	BigDecimal calcularValorProdutos(CarrinhoDeCompras carrinho){
+		// Definir valor total
+		BigDecimal valorTotal = BigDecimal.ZERO;
+
+		// Percorrer itens do carrinho e guardar preços
+		for (ItemCompra item : carrinho.getItens()) {
+			BigDecimal valor = BigDecimal.valueOf(item.getQuantidade()).multiply(item.getProduto().getPreco());
+
+			// Adicionar valores ao total
+			valorTotal = valorTotal.add(valor);
+		}
+
+		// Calcular desconto com base no valor dos produtos
 		if (valorTotal.compareTo(BigDecimal.valueOf(1000)) > 0) {
 			valorTotal = valorTotal.multiply(BigDecimal.valueOf(0.8));
 		} else if (valorTotal.compareTo(BigDecimal.valueOf(500)) > 0) {
 			valorTotal = valorTotal.multiply(BigDecimal.valueOf(0.9));
 		}
 
-		// Retornar o valor total
-		valorTotal = valorTotal.add(valorFrete);
 		return valorTotal;
 	}
 }
