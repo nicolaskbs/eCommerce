@@ -105,4 +105,26 @@ public class CompraServiceTest {
         valorBase = valorBase.add(BigDecimal.valueOf(2)); // Ajuste para o segundo item.
         assertTrue(valorProdutos.compareTo(multiplicador.multiply(valorBase)) == 0);
     }
+
+    @Test
+    void testeCalcularCustoTotal() {
+        // Inicializar cliente
+        Cliente cliente = new Cliente(1L, "João", "Rua 1", TipoCliente.OURO);
+
+        // Inicializar produto
+        Produto produto1 = new Produto(2L, "Produto 1", "Descrição 1", new BigDecimal("100.00"), 10, TipoProduto.ROUPA);
+
+        // Inicializar item
+        ItemCompra item1 = new ItemCompra(3L, produto1, 1L);
+        List<ItemCompra> itens = new ArrayList<>();
+        itens.add(item1);
+
+        // Inicializar carrinho
+        CarrinhoDeCompras carrinho = new CarrinhoDeCompras(4L, cliente, itens, null);
+
+        // Calcular resultado
+        BigDecimal resultado  = compraService.calcularCustoTotal(carrinho);
+
+        assertTrue(resultado.compareTo(new BigDecimal("100.00")) == 0);
+    }
 }
