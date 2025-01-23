@@ -132,11 +132,14 @@ public class CompraService {
 
 		// Calcular desconto com base no valor dos produtos
 		if (valorTotal.compareTo(BigDecimal.valueOf(1000)) > 0) {
-			valorTotal = valorTotal.multiply(BigDecimal.valueOf(0.8));
+			// Promoção de 20%
+			return valorTotal.multiply(BigDecimal.valueOf(0.8));
 		} else if (valorTotal.compareTo(BigDecimal.valueOf(500)) > 0) {
-			valorTotal = valorTotal.multiply(BigDecimal.valueOf(0.9));
+			// Promoção de 10%
+			return valorTotal.multiply(BigDecimal.valueOf(0.9));
 		}
 
+		// Sem promoção
 		return valorTotal;
 	}
 }
