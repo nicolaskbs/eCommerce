@@ -81,6 +81,12 @@ public class CompraService {
 
 	BigDecimal calcularFrete(CarrinhoDeCompras carrinho){
 
+		// Cliente Ouro
+		TipoCliente tipoCliente = carrinho.getCliente().getTipo();
+		if (tipoCliente == TipoCliente.OURO) {
+			return BigDecimal.ZERO;
+		}
+
 		// Calcular peso do carrinho
 		Integer pesoTotal = 0;
 		for (ItemCompra item : carrinho.getItens()) {
@@ -94,7 +100,7 @@ public class CompraService {
 		BigDecimal valorFrete = BigDecimal.ZERO;
 
 		if(pesoTotal < 5) {
-			valorFrete = BigDecimal.ZERO;
+			return BigDecimal.ZERO;
 		} else if (pesoTotal < 10) {
 			valorFrete = BigDecimal.valueOf(pesoTotal * 2);
 		} else if (pesoTotal < 50) {
@@ -103,15 +109,12 @@ public class CompraService {
 			valorFrete = BigDecimal.valueOf(pesoTotal * 7);
 		}
 
-		// Calcular frete para tipo de clientes
-		TipoCliente tipoCliente = carrinho.getCliente().getTipo();
-
-		if (tipoCliente == TipoCliente.OURO) {
-			valorFrete = BigDecimal.ZERO;
-		} else if (tipoCliente == TipoCliente.PRATA) {
-			valorFrete = valorFrete.multiply(BigDecimal.valueOf(0.5));
+		// Cliente Prata
+		if (tipoCliente == TipoCliente.PRATA) {
+			return valorFrete.multiply(BigDecimal.valueOf(0.5));
 		}
 
+		// Cliente Bronze
 		return valorFrete;
 	}
 
