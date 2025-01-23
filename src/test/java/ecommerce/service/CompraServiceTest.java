@@ -29,32 +29,36 @@ public class CompraServiceTest {
 
     @ParameterizedTest
     @CsvSource({
-            "OURO, 100, 0", // Cliente Ouro, Peso qualquer (REGRA 1)
-            "BRONZE, 4, 0", // Cliente qualquer, Peso <5 (REGRA 2)
-            "PRATA, 5, 1", // Cliente Prata, Peso <10 (REGRA 3)
-            "PRATA, 9, 1", // Cliente Prata, Peso <10 (REGRA 3)
-            "PRATA, 10, 2", // Cliente Prata, Peso <50 (REGRA 4)
-            "PRATA, 49, 2", // Cliente Prata, Peso <50 (REGRA 4)
-            "PRATA, 50, 3.5", // Cliente Prata, Peso >=50 (REGRA 5)
-            "PRATA, 51, 3.5", // Cliente Prata, Peso >=50 (REGRA 5)
-            "BRONZE, 5, 2", // Cliente Bronze, Peso <10 (REGRA 6)
-            "BRONZE, 9, 2", // Cliente Bronze, Peso <10 (REGRA 6)
-            "BRONZE, 10, 4", // Cliente Bronze, Peso <50 (REGRA 7)
-            "BRONZE, 49, 4", // Cliente Bronze, Peso <50 (REGRA 7)
-            "BRONZE, 50, 7", // Cliente Bronze, Peso >=50 (REGRA 8)
-            "BRONZE, 51, 7" // Cliente Bronze, Peso >=50 (REGRA 8)
+            // peso := (item1) + (item2 == 2)
+            "OURO, 98, 0", // Cliente Ouro, Peso qualquer (REGRA 1)
+            "BRONZE, 2, 0", // Cliente qualquer, Peso <5 (REGRA 2)
+            "PRATA, 3, 1", // Cliente Prata, Peso <10 (REGRA 3)
+            "PRATA, 7, 1", // Cliente Prata, Peso <10 (REGRA 3)
+            "PRATA, 8, 2", // Cliente Prata, Peso <50 (REGRA 4)
+            "PRATA, 47, 2", // Cliente Prata, Peso <50 (REGRA 4)
+            "PRATA, 48, 3.5", // Cliente Prata, Peso >=50 (REGRA 5)
+            "PRATA, 49, 3.5", // Cliente Prata, Peso >=50 (REGRA 5)
+            "BRONZE, 3, 2", // Cliente Bronze, Peso <10 (REGRA 6)
+            "BRONZE, 7, 2", // Cliente Bronze, Peso <10 (REGRA 6)
+            "BRONZE, 8, 4", // Cliente Bronze, Peso <50 (REGRA 7)
+            "BRONZE, 47, 4", // Cliente Bronze, Peso <50 (REGRA 7)
+            "BRONZE, 48, 7", // Cliente Bronze, Peso >=50 (REGRA 8)
+            "BRONZE, 49, 7" // Cliente Bronze, Peso >=50 (REGRA 8)
     })
 	void testeCalcularFrete(TipoCliente tipo, Integer peso, BigDecimal multiplicador) {
         // Inicializar cliente
         Cliente cliente = new Cliente(1L, "João", "Rua 1", tipo);
 
-        // Inicializar produto
+        // Inicializar produtos
         Produto produto1 = new Produto(2L, "Produto 1", "Descrição 1", new BigDecimal("100.00"), peso, TipoProduto.ROUPA);
+        Produto produto2 = new Produto(5L, "Produto 2", "Descrição 2", new BigDecimal("100.00"), 1, TipoProduto.ROUPA);
 
         // Inicializar itens
         ItemCompra item1 = new ItemCompra(3L, produto1, 1L);
+        ItemCompra item2 = new ItemCompra(6L, produto2, 2L);
         List<ItemCompra> itens = new ArrayList<>();
         itens.add(item1);
+        itens.add(item2);
 
         // Inicializar carrinho
         CarrinhoDeCompras carrinho = new CarrinhoDeCompras(4L, cliente, itens, null);
@@ -62,16 +66,18 @@ public class CompraServiceTest {
 		// Calcular frete
 		BigDecimal frete = compraService.calcularFrete(carrinho);
 
+        peso += 2; // Ajuste para o segundo item.
         assertTrue(frete.compareTo(multiplicador.multiply(BigDecimal.valueOf(peso))) == 0);
 	}
 
     @ParameterizedTest
     @CsvSource({
-            "499.99, 1", // <=500 (REGRA 1)
-            "500, 1", // <=500 (REGRA 1)
-            "999.99, 0.9", // <=1000 (REGRA 2)
-            "1000, 0.9", // <=1000 (REGRA 2)
-            "1000.01, 0.8" // >1000 (REGRA 3)
+            // valor := (item1) + (item2 == 2)
+            "497.99, 1", // <=500 (REGRA 1)
+            "498, 1", // <=500 (REGRA 1)
+            "997.99, 0.9", // <=1000 (REGRA 2)
+            "998, 0.9", // <=1000 (REGRA 2)
+            "998.01, 0.8" // >1000 (REGRA 3)
     })
     void testeCalcularValorProdutos(BigDecimal valorBase, BigDecimal multiplicador) {
         // Inicializar cliente
@@ -79,11 +85,14 @@ public class CompraServiceTest {
 
         // Inicializar produto
         Produto produto1 = new Produto(2L, "Produto 1", "Descrição 1", valorBase, 10, TipoProduto.ROUPA);
+        Produto produto2 = new Produto(5L, "Produto 2", "Descrição 2", BigDecimal.valueOf(1), 10, TipoProduto.ROUPA);
 
         // Inicializar itens
         ItemCompra item1 = new ItemCompra(3L, produto1, 1L);
+        ItemCompra item2 = new ItemCompra(6L, produto2, 2L);
         List<ItemCompra> itens = new ArrayList<>();
         itens.add(item1);
+        itens.add(item2);
 
         // Inicializar carrinho
         CarrinhoDeCompras carrinho = new CarrinhoDeCompras(4L, cliente, itens, null);
@@ -91,7 +100,7 @@ public class CompraServiceTest {
         // Calcular frete
         BigDecimal valorProdutos = compraService.calcularValorProdutos(carrinho);
 
-        assertEquals(valorProdutos, valorBase.multiply(multiplicador));
+        valorBase = valorBase.add(BigDecimal.valueOf(2)); // Ajuste para o segundo item.
         assertTrue(valorProdutos.compareTo(multiplicador.multiply(valorBase)) == 0);
     }
 }
