@@ -1,0 +1,279 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > CompraService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">ecommerce.service</a>
+</div>
+
+<h1>Coverage Summary for Class: CompraService (ecommerce.service)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CompraService</td>
+<td class="coverageStat">
+  <span class="percent">
+    60%
+  </span>
+  <span class="absValue">
+    (3/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    75%
+  </span>
+  <span class="absValue">
+    (18/24)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    62,7%
+  </span>
+  <span class="absValue">
+    (32/51)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">CompraService$$SpringCGLIB$$0</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    60%
+  </span>
+  <span class="absValue">
+    (3/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    75%
+  </span>
+  <span class="absValue">
+    (18/24)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    62,7%
+  </span>
+  <span class="absValue">
+    (32/51)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package ecommerce.service;
+&nbsp;
+&nbsp;import java.math.BigDecimal;
+&nbsp;import java.util.List;
+&nbsp;import java.util.stream.Collectors;
+&nbsp;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;
+&nbsp;import ecommerce.dto.CompraDTO;
+&nbsp;import ecommerce.dto.DisponibilidadeDTO;
+&nbsp;import ecommerce.dto.EstoqueBaixaDTO;
+&nbsp;import ecommerce.dto.PagamentoDTO;
+&nbsp;import ecommerce.entity.CarrinhoDeCompras;
+&nbsp;import ecommerce.entity.Cliente;
+&nbsp;import ecommerce.entity.ItemCompra;
+&nbsp;import ecommerce.entity.TipoCliente;
+&nbsp;import ecommerce.external.IEstoqueExternal;
+&nbsp;import ecommerce.external.IPagamentoExternal;
+&nbsp;import jakarta.transaction.Transactional;
+&nbsp;
+&nbsp;@Service
+&nbsp;public class CompraService {
+&nbsp;
+&nbsp;	private final CarrinhoDeComprasService carrinhoService;
+&nbsp;	private final ClienteService clienteService;
+&nbsp;
+&nbsp;	private final IEstoqueExternal estoqueExternal;
+&nbsp;	private final IPagamentoExternal pagamentoExternal;
+&nbsp;
+&nbsp;	@Autowired
+&nbsp;	public CompraService(CarrinhoDeComprasService carrinhoService, ClienteService clienteService,
+<b class="fc">&nbsp;			IEstoqueExternal estoqueExternal, IPagamentoExternal pagamentoExternal) {</b>
+<b class="fc">&nbsp;		this.carrinhoService = carrinhoService;</b>
+<b class="fc">&nbsp;		this.clienteService = clienteService;</b>
+&nbsp;
+<b class="fc">&nbsp;		this.estoqueExternal = estoqueExternal;</b>
+<b class="fc">&nbsp;		this.pagamentoExternal = pagamentoExternal;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	@Transactional
+&nbsp;	public CompraDTO finalizarCompra(Long carrinhoId, Long clienteId) {
+<b class="nc">&nbsp;		Cliente cliente = clienteService.buscarPorId(clienteId);</b>
+<b class="nc">&nbsp;		CarrinhoDeCompras carrinho = carrinhoService.buscarPorCarrinhoIdEClienteId(carrinhoId, cliente);</b>
+&nbsp;
+<b class="nc">&nbsp;		List&lt;Long&gt; produtosIds = carrinho.getItens().stream().map(i -&gt; i.getProduto().getId())</b>
+<b class="nc">&nbsp;				.collect(Collectors.toList());</b>
+<b class="nc">&nbsp;		List&lt;Long&gt; produtosQtds = carrinho.getItens().stream().map(i -&gt; i.getQuantidade()).collect(Collectors.toList());</b>
+&nbsp;
+<b class="nc">&nbsp;		DisponibilidadeDTO disponibilidade = estoqueExternal.verificarDisponibilidade(produtosIds, produtosQtds);</b>
+&nbsp;
+<b class="nc">&nbsp;		if (!disponibilidade.disponivel()) {</b>
+<b class="nc">&nbsp;			throw new IllegalStateException(&quot;Itens fora de estoque.&quot;);</b>
+&nbsp;		}
+&nbsp;
+<b class="nc">&nbsp;		BigDecimal custoTotal = calcularCustoTotal(carrinho);</b>
+&nbsp;
+<b class="nc">&nbsp;		PagamentoDTO pagamento = pagamentoExternal.autorizarPagamento(cliente.getId(), custoTotal.doubleValue());</b>
+&nbsp;
+<b class="nc">&nbsp;		if (!pagamento.autorizado()) {</b>
+<b class="nc">&nbsp;			throw new IllegalStateException(&quot;Pagamento não autorizado.&quot;);</b>
+&nbsp;		}
+&nbsp;
+<b class="nc">&nbsp;		EstoqueBaixaDTO baixaDTO = estoqueExternal.darBaixa(produtosIds, produtosQtds);</b>
+&nbsp;
+<b class="nc">&nbsp;		if (!baixaDTO.sucesso()) {</b>
+<b class="nc">&nbsp;			pagamentoExternal.cancelarPagamento(cliente.getId(), pagamento.transacaoId());</b>
+<b class="nc">&nbsp;			throw new IllegalStateException(&quot;Erro ao dar baixa no estoque.&quot;);</b>
+&nbsp;		}
+&nbsp;
+<b class="nc">&nbsp;		CompraDTO compraDTO = new CompraDTO(true, pagamento.transacaoId(), &quot;Compra finalizada com sucesso.&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;		return compraDTO;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	public BigDecimal calcularCustoTotal(CarrinhoDeCompras carrinho) {
+&nbsp;
+&nbsp;		// Retornar o custo final com cálculo de frete e promoção
+<b class="nc">&nbsp;		return calcularFrete(carrinho).add(calcularValorProdutos(carrinho));</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	BigDecimal calcularFrete(CarrinhoDeCompras carrinho){
+&nbsp;
+&nbsp;		// Cliente Ouro
+<b class="fc">&nbsp;		TipoCliente tipoCliente = carrinho.getCliente().getTipo();</b>
+<b class="fc">&nbsp;		if (tipoCliente == TipoCliente.OURO) {</b>
+<b class="fc">&nbsp;			return BigDecimal.ZERO;</b>
+&nbsp;		}
+&nbsp;
+&nbsp;		// Calcular peso do carrinho
+<b class="fc">&nbsp;		Integer pesoTotal = 0;</b>
+<b class="fc">&nbsp;		for (ItemCompra item : carrinho.getItens()) {</b>
+<b class="fc">&nbsp;			Integer peso = (int) (item.getQuantidade() * item.getProduto().getPeso());</b>
+&nbsp;
+&nbsp;			// Adicionar valores ao total
+<b class="fc">&nbsp;			pesoTotal += peso;</b>
+&nbsp;		}
+&nbsp;
+&nbsp;		// Calcular frete com base no peso
+<b class="fc">&nbsp;		BigDecimal valorFrete = BigDecimal.ZERO;</b>
+&nbsp;
+<b class="fc">&nbsp;		if(pesoTotal &lt; 5) {</b>
+<b class="fc">&nbsp;			return BigDecimal.ZERO;</b>
+<b class="fc">&nbsp;		} else if (pesoTotal &lt; 10) {</b>
+<b class="fc">&nbsp;			valorFrete = BigDecimal.valueOf(pesoTotal * 2);</b>
+<b class="fc">&nbsp;		} else if (pesoTotal &lt; 50) {</b>
+<b class="fc">&nbsp;			valorFrete = BigDecimal.valueOf(pesoTotal * 4);</b>
+&nbsp;		} else {
+<b class="fc">&nbsp;			valorFrete = BigDecimal.valueOf(pesoTotal * 7);</b>
+&nbsp;		}
+&nbsp;
+&nbsp;		// Cliente Prata
+<b class="fc">&nbsp;		if (tipoCliente == TipoCliente.PRATA) {</b>
+<b class="fc">&nbsp;			return valorFrete.multiply(BigDecimal.valueOf(0.5));</b>
+&nbsp;		}
+&nbsp;
+&nbsp;		// Cliente Bronze
+<b class="fc">&nbsp;		return valorFrete;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	BigDecimal calcularValorProdutos(CarrinhoDeCompras carrinho){
+&nbsp;		// Definir valor total
+<b class="fc">&nbsp;		BigDecimal valorTotal = BigDecimal.ZERO;</b>
+&nbsp;
+&nbsp;		// Percorrer itens do carrinho e guardar preços
+<b class="fc">&nbsp;		for (ItemCompra item : carrinho.getItens()) {</b>
+<b class="fc">&nbsp;			BigDecimal valor = BigDecimal.valueOf(item.getQuantidade()).multiply(item.getProduto().getPreco());</b>
+&nbsp;
+&nbsp;			// Adicionar valores ao total
+<b class="fc">&nbsp;			valorTotal = valorTotal.add(valor);</b>
+&nbsp;		}
+&nbsp;
+&nbsp;		// Calcular desconto com base no valor dos produtos
+<b class="fc">&nbsp;		if (valorTotal.compareTo(BigDecimal.valueOf(1000)) &gt; 0) {</b>
+&nbsp;			// Promoção de 20%
+<b class="fc">&nbsp;			return valorTotal.multiply(BigDecimal.valueOf(0.8));</b>
+<b class="fc">&nbsp;		} else if (valorTotal.compareTo(BigDecimal.valueOf(500)) &gt; 0) {</b>
+&nbsp;			// Promoção de 10%
+<b class="fc">&nbsp;			return valorTotal.multiply(BigDecimal.valueOf(0.9));</b>
+&nbsp;		}
+&nbsp;
+&nbsp;		// Sem promoção
+<b class="fc">&nbsp;		return valorTotal;</b>
+&nbsp;	}
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-23 05:08</div>
+</div>
+</body>
+</html>

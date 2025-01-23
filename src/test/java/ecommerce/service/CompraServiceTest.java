@@ -54,6 +54,7 @@ public class CompraServiceTest {
         Produto produto2 = new Produto(5L, "Produto 2", "Descrição 2", new BigDecimal("100.00"), 1, TipoProduto.ROUPA);
 
         // Inicializar itens
+        // Segundo item é necessário para cobrir arestas do loop
         ItemCompra item1 = new ItemCompra(3L, produto1, 1L);
         ItemCompra item2 = new ItemCompra(6L, produto2, 2L);
         List<ItemCompra> itens = new ArrayList<>();
@@ -88,6 +89,7 @@ public class CompraServiceTest {
         Produto produto2 = new Produto(5L, "Produto 2", "Descrição 2", BigDecimal.valueOf(1), 10, TipoProduto.ROUPA);
 
         // Inicializar itens
+        // Segundo item é necessário para cobrir arestas do loop
         ItemCompra item1 = new ItemCompra(3L, produto1, 1L);
         ItemCompra item2 = new ItemCompra(6L, produto2, 2L);
         List<ItemCompra> itens = new ArrayList<>();
