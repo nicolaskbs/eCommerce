@@ -19,7 +19,9 @@ import ecommerce.entity.ItemCompra;
 import ecommerce.entity.Produto;
 import ecommerce.entity.TipoCliente;
 import ecommerce.entity.TipoProduto;
+import org.springframework.boot.test.context.SpringBootTest;
 
+@SpringBootTest
 public class CompraServiceTest {
 
     @Autowired
@@ -27,20 +29,20 @@ public class CompraServiceTest {
 
     @ParameterizedTest
     @CsvSource({
-            "OURO, 100, BigDecimal.ZERO", // Cliente Ouro, Peso qualquer (REGRA 1)
-            "BRONZE, 4, BigDecimal.ZERO", // Cliente qualquer, Peso <5 (REGRA 2)
-            "PRATA, 5, BigDecimal.valueOf(1)", // Cliente Prata, Peso <10 (REGRA 3)
-            "PRATA, 9, BigDecimal.valueOf(1)", // Cliente Prata, Peso <10 (REGRA 3)
-            "PRATA, 10, BigDecimal.valueOf(2)", // Cliente Prata, Peso <50 (REGRA 4)
-            "PRATA, 49, BigDecimal.valueOf(2)", // Cliente Prata, Peso <50 (REGRA 4)
-            "PRATA, 50, BigDecimal.valueOf(3.5)", // Cliente Prata, Peso >=50 (REGRA 5)
-            "PRATA, 51, BigDecimal.valueOf(3.5)", // Cliente Prata, Peso >=50 (REGRA 5)
-            "BRONZE, 5, BigDecimal.valueOf(2)", // Cliente Bronze, Peso <10 (REGRA 6)
-            "BRONZE, 9, BigDecimal.valueOf(2)", // Cliente Bronze, Peso <10 (REGRA 6)
-            "BRONZE, 10, BigDecimal.valueOf(4)", // Cliente Bronze, Peso <50 (REGRA 7)
-            "BRONZE, 49, BigDecimal.valueOf(4)", // Cliente Bronze, Peso <50 (REGRA 7)
-            "BRONZE, 50, BigDecimal.valueOf(7)", // Cliente Bronze, Peso >=50 (REGRA 8)
-            "BRONZE, 51, BigDecimal.valueOf(7)" // Cliente Bronze, Peso >=50 (REGRA 8)
+            "OURO, 100, 0", // Cliente Ouro, Peso qualquer (REGRA 1)
+            "BRONZE, 4, 0", // Cliente qualquer, Peso <5 (REGRA 2)
+            "PRATA, 5, 1", // Cliente Prata, Peso <10 (REGRA 3)
+            "PRATA, 9, 1", // Cliente Prata, Peso <10 (REGRA 3)
+            "PRATA, 10, 2", // Cliente Prata, Peso <50 (REGRA 4)
+            "PRATA, 49, 2", // Cliente Prata, Peso <50 (REGRA 4)
+            "PRATA, 50, 3.5", // Cliente Prata, Peso >=50 (REGRA 5)
+            "PRATA, 51, 3.5", // Cliente Prata, Peso >=50 (REGRA 5)
+            "BRONZE, 5, 2", // Cliente Bronze, Peso <10 (REGRA 6)
+            "BRONZE, 9, 2", // Cliente Bronze, Peso <10 (REGRA 6)
+            "BRONZE, 10, 4", // Cliente Bronze, Peso <50 (REGRA 7)
+            "BRONZE, 49, 4", // Cliente Bronze, Peso <50 (REGRA 7)
+            "BRONZE, 50, 7", // Cliente Bronze, Peso >=50 (REGRA 8)
+            "BRONZE, 51, 7" // Cliente Bronze, Peso >=50 (REGRA 8)
     })
 	void testeCalcularFrete(TipoCliente tipo, Integer peso, BigDecimal multiplicador) {
         // Inicializar cliente
@@ -60,16 +62,16 @@ public class CompraServiceTest {
 		// Calcular frete
 		BigDecimal frete = compraService.calcularFrete(carrinho);
 
-		assertEquals(frete, multiplicador.multiply(BigDecimal.valueOf(peso)));
+        assertTrue(frete.compareTo(multiplicador.multiply(BigDecimal.valueOf(peso))) == 0);
 	}
 
     @ParameterizedTest
     @CsvSource({
-            "BigDecimal.valueOf(499.99), BigDecimal.valueOf(1)", // <=500 (REGRA 1)
-            "BigDecimal.valueOf(500), BigDecimal.valueOf(1)", // <=500 (REGRA 1)
-            "BigDecimal.valueOf(999.99), BigDecimal.valueOf(0.9)", // <=1000 (REGRA 2)
-            "BigDecimal.valueOf(1000), BigDecimal.valueOf(0.9)", // <=1000 (REGRA 2)
-            "BigDecimal.valueOf(1000.01), BigDecimal.valueOf(0.8)" // >1000 (REGRA 3)
+            "499.99, 1", // <=500 (REGRA 1)
+            "500, 1", // <=500 (REGRA 1)
+            "999.99, 0.9", // <=1000 (REGRA 2)
+            "1000, 0.9", // <=1000 (REGRA 2)
+            "1000.01, 0.8" // >1000 (REGRA 3)
     })
     void testeCalcularValorProdutos(BigDecimal valorBase, BigDecimal multiplicador) {
         // Inicializar cliente
@@ -90,5 +92,6 @@ public class CompraServiceTest {
         BigDecimal valorProdutos = compraService.calcularValorProdutos(carrinho);
 
         assertEquals(valorProdutos, valorBase.multiply(multiplicador));
+        assertTrue(valorProdutos.compareTo(multiplicador.multiply(valorBase)) == 0);
     }
 }
