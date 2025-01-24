@@ -45,7 +45,8 @@ public class CompraService {
 
 		List<Long> produtosIds = carrinho.getItens().stream().map(i -> i.getProduto().getId())
 				.collect(Collectors.toList());
-		List<Long> produtosQtds = carrinho.getItens().stream().map(i -> i.getQuantidade()).collect(Collectors.toList());
+		List<Long> produtosQtds = carrinho.getItens().stream().map(i -> i.getQuantidade())
+				.collect(Collectors.toList());
 
 		DisponibilidadeDTO disponibilidade = estoqueExternal.verificarDisponibilidade(produtosIds, produtosQtds);
 
@@ -68,9 +69,7 @@ public class CompraService {
 			throw new IllegalStateException("Erro ao dar baixa no estoque.");
 		}
 
-		CompraDTO compraDTO = new CompraDTO(true, pagamento.transacaoId(), "Compra finalizada com sucesso.");
-
-		return compraDTO;
+		return new CompraDTO(true, pagamento.transacaoId(), "Compra finalizada com sucesso.");
 	}
 
 	public BigDecimal calcularCustoTotal(CarrinhoDeCompras carrinho) {
