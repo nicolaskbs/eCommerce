@@ -1,3 +1,8 @@
+Para executar os testes, execute no terminal:
+- mvn test
+
+
+
 # Regras de Cálculo de Frete
 
 ### - Tipo de Cliente
@@ -75,14 +80,3 @@
 | Valor Produtos {≤500; ≤1000; >1000} | ≤500    | ≤1000   | >1000   |
 | **Multiplicador Promoção**          | Regra 1 | Regra 2 | Regra 3 |
 | {0.8; 0.9; 1}                       | 1       | 0.9     | 0.8     |
-
-
-### Tabela de Dispersão para Função de Finalizar Compra
-
-| **Condição**                 | Regra 1 | Regra 2 | Regra 3 | Regra 4 |
-|------------------------------|---------|---------|---------|---------|
-| Produtos Disponíveis         | F       | V       | V       | V       |
-| Pagamento Autorizado         | -       | F       | V       | V       |
-| Baixa no estoque com sucesso | -       | -       | F       | V       |
-| **AÇÃO**                     | Regra 1 | Regra 2 | Regra 3 | Regra 4 |
-| Lança Excessão               | V       | V       | V       | F       |

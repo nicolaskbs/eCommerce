@@ -17,6 +17,7 @@ import java.util.Map;
 @Service
 public class PagamentoSimulado implements IPagamentoExternal{
 
+	/*
 	// Chave: id do cliente, valor: saldo do cliente para compra
 	Map<Long, Double> pagamentoSimulado = new HashMap<>();
 	public PagamentoSimulado() {
@@ -32,10 +33,11 @@ public class PagamentoSimulado implements IPagamentoExternal{
 	public Double saldoCliente(Long idCliente){
 		return pagamentoSimulado.get(idCliente);
 	}
+	*/
 
 	@Override
 	public PagamentoDTO autorizarPagamento(Long id, Double valor) {
-
+		/*
 		// Lógica para gerar id da Transação
 		Long idTransacao = 1234567 * id + valor.intValue();
 		boolean autorizado = true;
@@ -48,10 +50,17 @@ public class PagamentoSimulado implements IPagamentoExternal{
 		}
 
 		return new PagamentoDTO(autorizado, idTransacao);
+
+		 */
+		throw new UnsupportedOperationException("Unimplemented method 'autorizarPagamento'");
 	}
 
 	@Override
 	public void cancelarPagamento(Long id, Long valor) {
+		/*
 		pagamentoSimulado.put(id, pagamentoSimulado.get(id) + valor);
+
+		 */
+		throw new UnsupportedOperationException("Unimplemented method 'cancelarPagamento'");
 	}
 }

@@ -17,6 +17,7 @@ import ecommerce.external.IEstoqueExternal;
 @Service
 public class EstoqueSimulado implements IEstoqueExternal {
 
+    /*
     // Criando Estoque para simulação
     // Chave: id do cliente, valor: quantidade de produtos
     Map<Long, Long> estoqueSimulado = new HashMap<>();
@@ -30,10 +31,10 @@ public class EstoqueSimulado implements IEstoqueExternal {
         estoqueSimulado.put(2L, 570L);
         estoqueSimulado.put(3L, 44L);
     }
-
+    */
     @Override
     public EstoqueBaixaDTO darBaixa(List<Long> produtosIds, List<Long> produtosQuantidades) {
-
+        /*
         boolean sucesso = true;
 
         for(int i = 0; i < produtosIds.size(); i++){
@@ -50,11 +51,15 @@ public class EstoqueSimulado implements IEstoqueExternal {
             }
         }
         return new EstoqueBaixaDTO(sucesso);
+
+         */
+        throw new UnsupportedOperationException("Unimplemented method 'darBaixa'");
     }
 
     @Override
     public DisponibilidadeDTO verificarDisponibilidade(List<Long> produtosIds, List<Long> produtosQuantidades) {
 
+        /*
         // Inicialmente todos os produtos estão disponíveis
         boolean disponivel = true;
         List<Long> idsProdutosIndisponiveis = new ArrayList<>();
@@ -73,5 +78,8 @@ public class EstoqueSimulado implements IEstoqueExternal {
         }
 
         return new DisponibilidadeDTO(disponivel, idsProdutosIndisponiveis);
+
+         */
+        throw new UnsupportedOperationException("Unimplemented method 'verificarDisponibilidade'");
     }
 }
