@@ -147,6 +147,7 @@ public class CompraServiceTest {
         // Inicializar carrinho
         CarrinhoDeCompras carrinho = new CarrinhoDeCompras(200L, cliente, itens, null);
 
+        // Assert com banco simulado
         assertThrows(IllegalStateException.class, () -> {
             new EstoqueSimulado();
             compraService.finalizarCompra(200L, 6L);
@@ -176,5 +177,57 @@ public class CompraServiceTest {
             new PagamentoSimulado();
             compraService.finalizarCompra(200L, 6L);
         });
+    }
+
+    @Test
+    void testeFinalizarCompra_LancaExcecao_PagamentoNaoAutorizado() {
+
+        // Inicializar cliente
+        Cliente cliente = new Cliente(5L, "Gustavo", "rua 2", TipoCliente.PRATA);
+
+        // Inicializar produto
+        Produto produto = new Produto(2L, "produto2", "descrição 2", new BigDecimal("125.25"), 2, TipoProduto.LIVRO);
+
+        // Inicializar item
+        ItemCompra item = new ItemCompra(453L, produto, 1L);
+        List<ItemCompra> itens = new ArrayList<>();
+        itens.add(item);
+
+        // Inicializar carrinho
+        CarrinhoDeCompras carrinho = new CarrinhoDeCompras(200L, cliente, itens, null);
+
+        // Assert com banco simulado
+        assertThrows(IllegalStateException.class, () -> {
+            new EstoqueSimulado();
+            new PagamentoSimulado();
+            compraService.finalizarCompra(200L, 6L);
+        });
+    }
+
+    @Test
+    void testeFinalizarCompra_LancaExcecao_ErroAoDarBaixa() {
+
+        // Inicializar cliente
+        Cliente cliente = new Cliente(4L, "Cleiton", "rua 1", TipoCliente.OURO);
+
+        // Inicializar produto
+        Produto produto = new Produto(2L, "produto2", "descrição 2", new BigDecimal("125.25"), 2, TipoProduto.LIVRO);
+
+        // Inicializar item
+        ItemCompra item = new ItemCompra(453L, produto, 1L);
+        List<ItemCompra> itens = new ArrayList<>();
+        itens.add(item);
+
+        // Inicializar carrinho
+        CarrinhoDeCompras carrinho = new CarrinhoDeCompras(200L, cliente, itens, null);
+
+        // Assert com banco simulado
+        new EstoqueSimulado();
+        PagamentoSimulado pagamento = new PagamentoSimulado();
+        Double saldoAnterior = pagamento.saldoCliente(4L);
+        assertThrows(IllegalStateException.class, () -> {
+            compraService.finalizarCompra(200L, 6L);
+        });
+        assertTrue(pagamento.saldoCliente(4L).equals(saldoAnterior));
     }
 }

@@ -29,6 +29,10 @@ public class PagamentoSimulado implements IPagamentoExternal{
 		pagamentoSimulado.put(6L, 150000.99);
 	}
 
+	public Double saldoCliente(Long idCliente){
+		return pagamentoSimulado.get(idCliente);
+	}
+
 	@Override
 	public PagamentoDTO autorizarPagamento(Long id, Double valor) {
 
