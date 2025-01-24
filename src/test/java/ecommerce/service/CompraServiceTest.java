@@ -131,7 +131,7 @@ public class CompraServiceTest {
     }
 
     @Test
-    void testeFinalizarCompra_LancaExcecao_ItemForaDeEstoque(Long idProduto) {
+    void testeFinalizarCompra_LancaExcecao_ItemForaDeEstoque() {
 
         // Inicializar cliente
         Cliente cliente = new Cliente(6L, "Bob", "rua 3", TipoCliente.BRONZE);
