@@ -1,11 +1,11 @@
 package ecommerce.service;
 
+import ecommerce.external.fake.EstoqueSimulado;
+import ecommerce.external.fake.PagamentoSimulado;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +20,8 @@ import ecommerce.entity.Produto;
 import ecommerce.entity.TipoCliente;
 import ecommerce.entity.TipoProduto;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class CompraServiceTest {
@@ -126,5 +128,53 @@ public class CompraServiceTest {
         BigDecimal resultado  = compraService.calcularCustoTotal(carrinho);
 
         assertTrue(resultado.compareTo(new BigDecimal("100.00")) == 0);
+    }
+
+    @Test
+    void testeFinalizarCompra_LancaExcecao_ItemForaDeEstoque(Long idProduto) {
+
+        // Inicializar cliente
+        Cliente cliente = new Cliente(6L, "Bob", "rua 3", TipoCliente.BRONZE);
+
+        // Inicializar produto
+        Produto produto = new Produto(333L, "produto1", "descrição 1", new BigDecimal("700.00"), 25, TipoProduto.ELETRONICO);
+
+        // Inicializar item
+        ItemCompra item = new ItemCompra(452L, produto, 1L);
+        List<ItemCompra> itens = new ArrayList<>();
+        itens.add(item);
+
+        // Inicializar carrinho
+        CarrinhoDeCompras carrinho = new CarrinhoDeCompras(200L, cliente, itens, null);
+
+        assertThrows(IllegalStateException.class, () -> {
+            new EstoqueSimulado();
+            compraService.finalizarCompra(200L, 6L);
+        });
+    }
+
+    @Test
+    void testeFinalizarCompra_NAOLancaExcecao() {
+
+        // Inicializar cliente
+        Cliente cliente = new Cliente(6L, "Bob", "rua 3", TipoCliente.BRONZE);
+
+        // Inicializar produto
+        Produto produto = new Produto(1L, "produto1", "descrição 1", new BigDecimal("700.00"), 25, TipoProduto.ELETRONICO);
+
+        // Inicializar item
+        ItemCompra item = new ItemCompra(451L, produto, 1L);
+        List<ItemCompra> itens = new ArrayList<>();
+        itens.add(item);
+
+        // Inicializar carrinho
+        CarrinhoDeCompras carrinho = new CarrinhoDeCompras(200L, cliente, itens, null);
+
+        // Assert com banco simulado
+        assertDoesNotThrow( () -> {
+            new EstoqueSimulado();
+            new PagamentoSimulado();
+            compraService.finalizarCompra(200L, 6L);
+        });
     }
 }

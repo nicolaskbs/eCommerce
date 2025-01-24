@@ -21,12 +21,12 @@ public class PagamentoSimulado implements IPagamentoExternal{
 	Map<Long, Double> pagamentoSimulado = new HashMap<>();
 	public PagamentoSimulado() {
 		// Inicializando o estoque simulado com alguns produtos
-		Cliente cliente1 = new Cliente(1L, "Cleiton", "rua 1", TipoCliente.OURO);
-		Cliente cliente2 = new Cliente(2L, "Gustavo", "rua 2", TipoCliente.PRATA);
-		Cliente cliente3 = new Cliente(3L, "Bob", "rua 3", TipoCliente.BRONZE);
-		pagamentoSimulado.put(1L, 1000.50);
-		pagamentoSimulado.put(2L, 52.01);
-		pagamentoSimulado.put(3L, 150000.99);
+		Cliente cliente1 = new Cliente(4L, "Cleiton", "rua 1", TipoCliente.OURO);
+		Cliente cliente2 = new Cliente(5L, "Gustavo", "rua 2", TipoCliente.PRATA);
+		Cliente cliente3 = new Cliente(6L, "Bob", "rua 3", TipoCliente.BRONZE);
+		pagamentoSimulado.put(4L, 1000.50);
+		pagamentoSimulado.put(5L, 52.01);
+		pagamentoSimulado.put(6L, 150000.99);
 	}
 
 	@Override
