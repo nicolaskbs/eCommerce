@@ -1,6 +1,6 @@
 Ficamos na dúvida se era necessário cobrir com testes o método finalizarCompra além do calcularCustoTotal.
 
-No final, a nossa tentativa de cobrir finalizarCompra não deu certo. Mesmo assim, decidimos deixar a nossa falha como código comentado. 
+No final, a nossa tentativa de cobrir totalmente finalizarCompra não deu certo. Mesmo assim, decidimos deixar a nossa falha como código comentado. 
 
 O código comentado aparece em
 - src/test/java/ecommerce/service/CompraServiceTest.java

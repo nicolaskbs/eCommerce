@@ -1,7 +1,13 @@
 Para executar os testes, execute no terminal:
 - mvn test
 
+Para gerar o relatório de cobertura de arestas usamos o intelliJ onde executamos os testes normais, no temrinal "mvn test", e depois usamos a opção da própria IDE de gerar relatorio de cobertura.
 
+A partir desse relatório gerado conseguimos verificar que cobrimos todas as arestas.
+
+Para gerar o relatório de mutantes, basta executar o comando "mvn test-compile org.pitest:pitest-maven:mutationCoverage" na raiz do projeto, depois que finalizar a execução sem erros os arquivos estarão na pasta target/pit-reports
+
+A partir desses arquivos gerados é possivel verificar o arquivo "target/pit-reports/ecommerce.service/CompraService.java.html", o mesmo possui a informação de quis mutações foram matadas, nessas informações temos a que para a função de calcularCustoTotal todos os mutantes relevantes foram finalizados.
 
 # Regras de Cálculo de Frete
 
